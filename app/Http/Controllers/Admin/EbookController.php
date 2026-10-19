@@ -160,6 +160,8 @@ class EbookController extends Controller
 
     /**
      * Ekstrak teks PDF untuk chatbot. Kegagalan tidak menggagalkan request.
+     * set_time_limit/ignore_user_abort di-set oleh PdfTextExtractor karena di
+     * sinilah parsing PDF besar berlangsung.
      */
     protected function indexPdfContent(Ebook $ebook): void
     {

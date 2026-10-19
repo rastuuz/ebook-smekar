@@ -25,6 +25,11 @@ class PdfTextExtractor
     public function extract(string $diskPath): ?array
     {
         try {
+            // PDF besar sering butuh > 30 detik (max_execution_time default) untuk
+            // parsing. set_time_limit(0) mereset timer mulai titik ekstraksi ini.
+            set_time_limit(0);
+            ignore_user_abort(true);
+
             $disk = Storage::disk('local')->exists($diskPath) ? 'local' : 'public';
 
             if (! Storage::disk($disk)->exists($diskPath)) {
