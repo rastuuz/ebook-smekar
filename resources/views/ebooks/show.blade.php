@@ -50,10 +50,19 @@
                 @if($ebook->file)
                 <div class="border-t border-stone-200/80 p-4 sm:p-5">
                     <p class="title-display mb-2 text-base">Pratinjau PDF</p>
-                    <div class="h-[60dvh] max-h-[480px] min-h-[320px] overflow-hidden rounded-lg border border-stone-200">
+                    {{-- Desktop: iframe. Mobile: browser HP umumnya tak bisa render PDF inline — ganti tombol buka. --}}
+                    <div id="pdf-preview" class="h-[60dvh] max-h-[480px] min-h-[320px] overflow-hidden rounded-lg border border-stone-200">
                         <iframe src="{{ route('ebooks.read', $ebook) }}" class="h-full w-full" title="Pratinjau PDF"></iframe>
                     </div>
-                    <p class="mt-2 text-xs text-stone-400">Jika PDF tidak tampil, <a class="font-semibold text-brand-800 underline underline-offset-4" target="_blank" href="{{ route('ebooks.read', $ebook) }}">buka di tab baru</a>.</p>
+                    <div id="pdf-preview-fallback" class="hidden rounded-lg border border-dashed border-stone-300 bg-[#faf8f3] p-6 text-center">
+                        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#c9a227]/30 bg-[#faf3dd]">
+                            <svg class="h-6 w-6 text-[#a8861d]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9Z"/><path d="M13 3v6h6"/><path d="M9 15h6M9 11h3"/></svg>
+                        </span>
+                        <p class="mt-3 text-sm font-semibold text-stone-800">Pratinjau PDF tidak ditampilkan di layar kecil</p>
+                        <p class="mx-auto mt-1 max-w-xs text-xs leading-relaxed text-stone-500">Browser HP umumnya tidak mendukung PDF bawaan. Buka langsung untuk membaca layar penuh.</p>
+                        <a href="{{ route('ebooks.read', $ebook) }}" target="_blank" class="btn-gold mt-4 w-full sm:w-auto">Baca E-Book →</a>
+                    </div>
+                    <p id="pdf-preview-note" class="mt-2 text-xs text-stone-400">Jika PDF tidak tampil, <a class="font-semibold text-brand-800 underline underline-offset-4" target="_blank" href="{{ route('ebooks.read', $ebook) }}">buka di tab baru</a>.</p>
                 </div>
                 @endif
             </div>
@@ -113,5 +122,19 @@
 
     <script>
         window.__EBOOK__ = { id: "{{ $ebook->id }}", title: @json($ebook->title) };
+    </script>
+    <script>
+    (function () {
+        var preview = document.getElementById('pdf-preview');
+        if (!preview) return;
+        var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+            || Math.min(window.screen.width, window.screen.height) < 500;
+        if (!isMobile) return;
+        preview.classList.add('hidden');
+        var fallback = document.getElementById('pdf-preview-fallback');
+        if (fallback) fallback.classList.remove('hidden');
+        var note = document.getElementById('pdf-preview-note');
+        if (note) note.classList.add('hidden');
+    })();
     </script>
 </x-app-layout>

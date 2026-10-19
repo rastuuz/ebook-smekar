@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex gap-2">
-        <a href="{{ route('admin.users.index') }}" class="btn-ghost">Batal</a>
+        <a href="{{ route('admin.users.index', ['role' => $user->role]) }}" class="btn-ghost">Batal</a>
         <button class="btn-primary">Perbarui</button>
     </div>
 </form>

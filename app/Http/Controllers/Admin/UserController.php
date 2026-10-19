@@ -16,25 +16,25 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $role = request('role', 'semua');
-        if (! in_array($role, ['semua', User::ROLE_SISWA, User::ROLE_GURU], true)) {
-            $role = 'semua';
+        $role = request('role', User::ROLE_SISWA);
+        if (! in_array($role, [User::ROLE_SISWA, User::ROLE_GURU], true)) {
+            $role = User::ROLE_SISWA;
         }
 
         $search = trim(mb_substr((string) request('q', ''), 0, 50));
 
-        $query = User::query()->whereIn('role', [User::ROLE_SISWA, User::ROLE_GURU]);
-
-        if ($role !== 'semua') {
-            $query->where('role', $role);
-        }
+        $query = User::query()->where('role', $role);
 
         if ($search !== '') {
-            $query->where(function ($q) use ($search) {
+            // Siswa dicari di nama/NIS/kelas; guru di nama/NIP (username).
+            $query->where(function ($q) use ($search, $role) {
                 Like::whereLike($q, 'name', $search);
-                Like::orWhereLike($q, 'nis', $search);
-                Like::orWhereLike($q, 'username', $search);
-                Like::orWhereLike($q, 'class', $search);
+                if ($role === User::ROLE_SISWA) {
+                    Like::orWhereLike($q, 'nis', $search);
+                    Like::orWhereLike($q, 'class', $search);
+                } else {
+                    Like::orWhereLike($q, 'username', $search);
+                }
             });
         }
 
@@ -47,7 +47,6 @@ class UserController extends Controller
         }
 
         $counts = [
-            'semua' => User::whereIn('role', [User::ROLE_SISWA, User::ROLE_GURU])->count(),
             User::ROLE_SISWA => User::where('role', User::ROLE_SISWA)->count(),
             User::ROLE_GURU => User::where('role', User::ROLE_GURU)->count(),
         ];
@@ -137,11 +136,12 @@ class UserController extends Controller
         }
 
         $label = $user->isGuru() ? 'Guru' : 'Siswa';
+        $role = $user->isGuru() ? User::ROLE_GURU : User::ROLE_SISWA;
         $user->delete();
 
         Cache::forget('stats:admin-dashboard');
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users.index', ['role' => $role])
             ->with('success', "Data {$label} berhasil dihapus.");
     }
 

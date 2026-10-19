@@ -16,7 +16,7 @@
     <div class="card card-pad card-hover">
         <p class="eyebrow">Total Siswa</p>
         <p class="title-display mt-3 text-5xl tabular-nums">{{ $totalSiswa }}</p>
-        <a href="{{ route('admin.users.index') }}" class="mt-3 inline-block text-sm font-semibold text-brand-800 underline-offset-4 hover:text-brand-950 hover:underline">Kelola siswa →</a>
+        <a href="{{ route('admin.users.index', ['role' => \App\Models\User::ROLE_SISWA]) }}" class="mt-3 inline-block text-sm font-semibold text-brand-800 underline-offset-4 hover:text-brand-950 hover:underline">Kelola siswa →</a>
     </div>
 </div>
 
