@@ -75,6 +75,9 @@
     const token = document.querySelector('meta[name="csrf-token"]')?.content || '';
     // Riwayat frontend-only: 5 pesan terakhir dikirim agar bot nyambung konteks.
     const history = [];
+    // Teks riwayat dibatasi 500 karakter agar lolos validasi backend (history.*.text max).
+    const clip = (s) => (s.length > 500 ? s.slice(0, 500) : s);
+    const inputDefault = input.placeholder;
 
     // Konteks e-book otomatis dari halaman detail (window.__EBOOK__ diset di show.blade.php)
     const ebookId = (window.__EBOOK__ && window.__EBOOK__.id) ? String(window.__EBOOK__.id) : '';
@@ -123,7 +126,7 @@
         if (q.length < 3) return;
         if (panel.classList.contains('hidden')) setOpen(true);
         bubble(q, true);
-        history.push({ role: 'user', text: q });
+        history.push({ role: 'user', text: clip(q) });
         if (history.length > 10) history.splice(0, history.length - 10);
         input.value = '';
         sendBtn.disabled = true;
@@ -144,7 +147,10 @@
             }
             const answer = data.answer || 'Maaf, belum ada jawaban.';
             bubble(answer, false);
-            history.push({ role: 'assistant', text: answer });
+            history.push({ role: 'assistant', text: clip(answer) });
+            if (/coba dijawab/i.test(answer)) {
+                input.placeholder = 'Tulis jawaban latihanmu di sini…';
+            }
             if (history.length > 10) history.splice(0, history.length - 10);
         } catch (ex) {
             loading.remove();
@@ -155,6 +161,9 @@
     }
 
     form.addEventListener('submit', (e) => { e.preventDefault(); sendQuestion(input.value.trim()); });
-    root.querySelectorAll('[data-float-suggest]').forEach((b) => b.addEventListener('click', () => sendQuestion(b.getAttribute('data-float-suggest') || '')));
+    root.querySelectorAll('[data-float-suggest]').forEach((b) => b.addEventListener('click', () => {
+        input.placeholder = inputDefault;
+        sendQuestion(b.getAttribute('data-float-suggest') || '');
+    }));
 })();
 </script>

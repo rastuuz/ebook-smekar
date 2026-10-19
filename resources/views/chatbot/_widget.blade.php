@@ -47,6 +47,10 @@
     const token = document.querySelector('meta[name="csrf-token"]')?.content || '';
     // Riwayat frontend-only: 5 pesan terakhir dikirim agar bot nyambung konteks.
     const history = [];
+    // Teks riwayat dibatasi 500 karakter agar lolos validasi backend (history.*.text max).
+    const clip = (s) => (s.length > 500 ? s.slice(0, 500) : s);
+    const inputDefault = input.placeholder;
+    let latihanMode = false;
 
     function bubble(text, mine) {
         const div = document.createElement('div');
@@ -63,7 +67,7 @@
         err.classList.add('hidden');
         if (q.length < 3) return;
         bubble(q, true);
-        history.push({ role: 'user', text: q });
+        history.push({ role: 'user', text: clip(q) });
         if (history.length > 10) history.splice(0, history.length - 10);
         input.value = '';
         sendBtn.disabled = true;
@@ -85,7 +89,10 @@
             }
             const answer = data.answer || 'Maaf, belum ada jawaban.';
             bubble(answer, false);
-            history.push({ role: 'assistant', text: answer });
+            history.push({ role: 'assistant', text: clip(answer) });
+            if (latihanMode || /coba dijawab/i.test(answer)) {
+                input.placeholder = 'Tulis jawaban latihanmu di sini…';
+            }
             if (history.length > 10) history.splice(0, history.length - 10);
         } catch (ex) {
             loading.remove();
@@ -99,6 +106,11 @@
         e.preventDefault();
         sendQuestion(input.value.trim());
     });
-    box.querySelectorAll('[data-chat-suggest]').forEach((b) => b.addEventListener('click', () => sendQuestion(b.getAttribute('data-chat-suggest') || '')));
+    box.querySelectorAll('[data-chat-suggest]').forEach((b) => b.addEventListener('click', () => {
+        const prompt = b.getAttribute('data-chat-suggest') || '';
+        latihanMode = /latihan/i.test(prompt);
+        if (!latihanMode) input.placeholder = inputDefault;
+        sendQuestion(prompt);
+    }));
 })();
 </script>

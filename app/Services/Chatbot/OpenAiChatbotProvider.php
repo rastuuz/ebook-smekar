@@ -24,7 +24,7 @@ class OpenAiChatbotProvider implements ChatbotProviderInterface
             throw new \RuntimeException('OPENAI_API_KEY belum dikonfigurasi.');
         }
 
-        $system = 'Kamu adalah tutor sekolah yang ramah. Jelaskan dengan bahasa sederhana untuk siswa SMP/SMA dalam Bahasa Indonesia. Maksimal 200 kata. Hanya jawab seputar materi pembelajaran.';
+        $system = 'Kamu adalah tutor sekolah yang ramah. Jelaskan dengan bahasa sederhana untuk siswa SMP/SMA dalam Bahasa Indonesia. Maksimal 200 kata. Jika diminta membuat latihan soal/daftar, buat persis sesuai jumlah yang diminta sampai selesai (tidak boleh terpotong). Hanya jawab seputar materi pembelajaran.';
         if (! empty($context['ebook_title'])) {
             $system .= " Konteks e-book: {$context['ebook_title']}.";
         }
@@ -62,7 +62,7 @@ class OpenAiChatbotProvider implements ChatbotProviderInterface
                 'model' => $model,
                 'messages' => $messages,
                 'temperature' => 0.6,
-                'max_tokens' => 400,
+                'max_tokens' => 1024,
             ]);
 
         if (! $response->successful()) {

@@ -34,7 +34,7 @@ class GeminiChatbotProvider implements ChatbotProviderInterface
             'contents' => $this->contentsWithHistory($question, $context),
             'generationConfig' => [
                 'temperature' => 0.5,
-                'maxOutputTokens' => 768,
+                'maxOutputTokens' => 2048,
                 'thinkingConfig' => ['thinkingLevel' => 'low'],
             ],
         ]);
@@ -79,6 +79,7 @@ class GeminiChatbotProvider implements ChatbotProviderInterface
     protected function systemPrompt(array $context): string
     {
         $prompt = 'Kamu tutor sekolah yang ramah. Jawab Bahasa Indonesia sederhana untuk siswa SMP/SMA, maksimal 200 kata. '
+            .'Jika diminta membuat latihan soal/daftar, buat persis sesuai jumlah yang diminta sampai selesai (tidak boleh terpotong). '
             .'Hanya jawab seputar materi pembelajaran. Tolak sopan pertanyaan di luar materi atau yang meminta data pribadi (NIS, nama siswa, password).';
 
         $chunks = $context['content_chunks'] ?? [];
