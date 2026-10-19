@@ -27,14 +27,15 @@ class GeminiChatbotProvider implements ChatbotProviderInterface
 
         $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=".urlencode($apiKey);
 
-        $response = Http::timeout(25)->post($url, [
+        $response = Http::timeout(90)->connectTimeout(10)->post($url, [
             'system_instruction' => [
                 'parts' => [['text' => $this->systemPrompt($context)]],
             ],
             'contents' => $this->contentsWithHistory($question, $context),
             'generationConfig' => [
                 'temperature' => 0.5,
-                'maxOutputTokens' => 400,
+                'maxOutputTokens' => 768,
+                'thinkingConfig' => ['thinkingLevel' => 'low'],
             ],
         ]);
 
