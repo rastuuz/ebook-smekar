@@ -9,6 +9,20 @@
     var bar = document.getElementById('page-progress');
     var timer = null;
 
+    function _lockFormButtons(form) {
+        // Kunci tombol kirim + tombol non-kirim yang menyumbang aksi data (mis. save/delete).
+        window.setTimeout(function () {
+            form.querySelectorAll('button[type="submit"], button:not([type]), button[type="button"], input[type="submit"]').forEach(function (b) {
+                if (!form.dataset.validated || b.disabled) return;
+                b.disabled = true;
+                b.setAttribute('data-locked', '1');
+                b.style.opacity = '0.55';
+                b.style.cursor = 'not-allowed';
+            });
+        }, 0);
+        form.dataset.validated = '1';
+    }
+
     function started() {
         return bar.style.width !== '' && bar.style.width !== '0%';
     }
@@ -59,10 +73,21 @@
     document.addEventListener('submit', function (e) {
         // Form live-search membatalkan submit (Ajax) — jangan tampilkan bilah.
         if (e.defaultPrevented) return;
+        // Proteksi double-submit: kunci tombol kirim form non-GET sekali jalan.
+        var form = e.target;
+        if (form && form.tagName === 'FORM' && (form.getAttribute('method') || 'get').toLowerCase() !== 'get' && !form.hasAttribute('data-no-lock')) {
+            _lockFormButtons(form);
+        }
         start();
     });
     window.addEventListener('beforeunload', function () { start(); });
-    window.addEventListener('pageshow', function () { finish(); });
+    window.addEventListener('pageshow', function () {
+        finish();
+        // Batal bila submit gagal/divalidasi: buka kembali tombol yang terkunci.
+        document.querySelectorAll('[data-locked]').forEach(function (b) {
+            b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; b.removeAttribute('data-locked');
+        });
+    });
 
     // Prefetch ringan: halaman yang dihover kemungkinan dibuka berikutnya.
     var prefetched = {};

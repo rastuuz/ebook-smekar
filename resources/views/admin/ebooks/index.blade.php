@@ -2,6 +2,7 @@
 @section('title', 'E-Book')
 
 @section('content')
+<div class="mb-3"><x-back-button :href="route('admin.dashboard')" label="Dashboard" /></div>
 <form method="GET" action="{{ route('admin.ebooks.index') }}" class="card mb-4 flex flex-col gap-2 p-3 sm:flex-row sm:items-center">
     <input type="search" name="q" value="{{ $search ?? '' }}" autocomplete="off" placeholder="Cari judul / penulis…" class="input w-full !mt-0 sm:max-w-xs" aria-label="Cari e-book">
     <p class="text-sm text-stone-500 sm:ml-1">{{ $ebooks->total() }} e-book • cover maks 2MB • PDF maks 30MB</p>

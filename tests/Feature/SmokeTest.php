@@ -106,6 +106,8 @@ test('admin bisa upload cover + pdf, tolak file bukan pdf', function () {
 });
 
 test('chatbot lokal mengutip isi buku + halaman', function () {
+    // Test ini menguji provider LOKAL agar hermetik walau .env memakai gemini/openai.
+    config(['chatbot.provider' => 'local']);
     $ebook = Ebook::first();
     $ebook->update(['content_text' => "[hal.3] Energi kinetik adalah energi yang dimiliki benda bergerak.\n\n[hal.4] Energi potensial tersimpan pada benda."]);
 

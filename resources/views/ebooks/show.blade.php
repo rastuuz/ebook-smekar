@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">{{ $ebook->title }}</x-slot>
     <x-slot name="header">
         <div class="flex items-center gap-3">
             <a href="{{ route('ebooks.index') }}" class="btn-ghost shrink-0 !px-3 !py-1.5 !text-xs">← Katalog</a>

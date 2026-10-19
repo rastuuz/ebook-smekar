@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Simpanan Saya</x-slot>
     <x-slot name="header">
         <p class="eyebrow">Rak Pribadi &middot; Simpanan</p>
         <h2 class="title-display mt-2 text-2xl sm:text-[1.7rem]">Simpanan Saya</h2>
@@ -7,6 +8,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <div><x-back-button :href="route('dashboard')" label="Dashboard" /></div>
             @if($bookmarks->isEmpty())
                 <div class="card card-pad py-12 text-center">
                     <p class="title-display text-lg">Belum ada simpanan</p>

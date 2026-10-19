@@ -7,7 +7,7 @@
         <meta name="theme-color" content="#0e1b33">
         <link rel="icon" href="{{ asset('favicon.ico') }}">
 
-        <title>{{ config('app.name', 'E-Library SMKN 1 Dukuhturi') }}</title>
+        <title>@isset($title){{ $title }} &mdash; @endisset{{ config('app.name', 'E-Library SMKN 1 Dukuhturi') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

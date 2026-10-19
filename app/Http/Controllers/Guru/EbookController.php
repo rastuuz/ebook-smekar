@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EbookRequest;
 use App\Models\Category;
 use App\Models\Ebook;
+use App\Services\PdfTextExtractor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -50,7 +51,7 @@ class EbookController extends Controller
 
         // Indeks teks PDF agar chatbot langsung bisa memakai e-book ini.
         if ($ebook->file) {
-            $result = app(\App\Services\PdfTextExtractor::class)->extract($ebook->file);
+            $result = app(PdfTextExtractor::class)->extract($ebook->file);
             if ($result !== null) {
                 $ebook->update([
                     'content_text' => $result['text'],

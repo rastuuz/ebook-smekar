@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class UserController extends Controller
 {
@@ -233,7 +234,7 @@ class UserController extends Controller
         }
 
         if (in_array($ext, ['xlsx', 'xls'], true)) {
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+            $spreadsheet = IOFactory::load($file->getRealPath());
 
             // Baca SEMUA sheet (file sekolah sering 1 sheet per kelas:
             // X-1, XI-2, XII-...). Dulu hanya sheet pertama yang kebaca
@@ -341,8 +342,8 @@ class UserController extends Controller
     /**
      * Petakan header ke indeks kolom. Kembalikan null jika baris bukan header.
      *
-     * @param array<int,string> $row
-     * @param array<string,array<int,string>> $synonyms field => daftar alias
+     * @param  array<int,string>  $row
+     * @param  array<string,array<int,string>>  $synonyms  field => daftar alias
      * @return array<string,int>|null
      */
     private static function detectHeaderMap(array $row, array $synonyms): ?array
@@ -376,7 +377,7 @@ class UserController extends Controller
     }
 
     /**
-     * @param array<int, array<int,string>> $rows
+     * @param  array<int, array<int,string>>  $rows
      * @return array{0:int,1:int} [imported, skipped]
      */
     private function importSiswaRows(array $rows): array
@@ -556,7 +557,7 @@ class UserController extends Controller
      * atau jika reset diminta / akun belum punya password, sehingga
      * guru yang sudah ganti sandi sendiri tidak ke-reset diam-diam.
      *
-     * @param array<int, array<int,string>> $rows
+     * @param  array<int, array<int,string>>  $rows
      * @return array{0:int,1:int} [imported, skipped]
      */
     private function importGuruRows(array $rows, string $defaultPassword, bool $reset): array

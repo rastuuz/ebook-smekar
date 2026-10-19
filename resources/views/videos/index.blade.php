@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Video Pembelajaran</x-slot>
     <x-slot name="header">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -6,9 +7,20 @@
                 <h2 class="title-display mt-2 text-2xl sm:text-[1.7rem]">Video Pembelajaran</h2>
                 <p class="mt-1 max-w-xl text-sm text-stone-500">Semua video materi e-book dalam satu halaman.</p>
             </div>
-            @if(auth()->user()?->isStaff())
-                <a href="{{ route('guru.videos.create') }}" class="btn-gold shrink-0 !py-2 !text-xs">+ Tambah Video</a>
-            @endif
+            <div class="flex shrink-0 flex-wrap items-center gap-2">
+                @if(auth()->user()?->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="btn-ghost inline-flex items-center gap-1.5 !py-2 !text-xs">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
+                        Panel Admin
+                    </a>
+                @elseif(auth()->user()?->isGuru())
+                    <a href="{{ route('dashboard') }}" class="btn-ghost inline-flex items-center gap-1.5 !py-2 !text-xs">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
+                        Dashboard
+                    </a>
+                @endif
+                <a href="{{ route('guru.videos.create') }}" class="btn-gold !py-2 !text-xs">+ Tambah Video</a>
+            </div>
         </div>
     </x-slot>
 

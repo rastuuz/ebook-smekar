@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Guru;
 
-use App\Http\Controllers\Admin\EbookVideoController as AdminVideoController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EbookVideoRequest;
 use App\Models\Ebook;

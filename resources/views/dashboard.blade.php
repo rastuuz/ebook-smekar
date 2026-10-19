@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Dashboard</x-slot>
     <x-slot name="header">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>

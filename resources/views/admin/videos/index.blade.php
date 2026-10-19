@@ -2,6 +2,7 @@
 @section('title', 'Video Pembelajaran')
 
 @section('content')
+<div class="mb-3"><x-back-button :href="route('admin.dashboard')" label="Dashboard" /></div>
 <div class="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
     <p class="text-sm text-stone-500">{{ $videos->total() }} video • embed YouTube aman (nocookie)</p>
     <a href="{{ route('admin.videos.create') }}" class="btn-primary !py-2 text-center text-sm">+ Tambah Video</a>

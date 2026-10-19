@@ -2,6 +2,7 @@
 @section('title', 'Data Pengguna')
 
 @section('content')
+<div class="mb-3"><x-back-button :href="route('admin.dashboard')" label="Dashboard" /></div>
 <form method="GET" action="{{ route('admin.users.index') }}" class="card mb-4 flex flex-col gap-2 p-3 sm:flex-row sm:items-center">
     <input type="hidden" name="role" value="{{ $role }}">
     <input type="search" name="q" value="{{ $search ?? '' }}" autocomplete="off" placeholder="{{ $role === \App\Models\User::ROLE_GURU ? 'Cari nama / NIP (username)…' : 'Cari nama / NIS…' }}" class="input w-full !mt-0 sm:max-w-xs" aria-label="Cari pengguna">

@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Katalog E-Book</x-slot>
     <x-slot name="header">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -7,7 +8,15 @@
                 <p class="mt-1 max-w-xl text-sm text-stone-500">Ketik untuk mencari seketika.</p>
             </div>
             @if(auth()->user()?->isStaff())
-                <a href="{{ route('guru.ebooks.create') }}" class="btn-primary shrink-0 !py-2 !text-xs">+ Tambah E-Book</a>
+                <div class="flex shrink-0 flex-wrap items-center gap-2">
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="btn-ghost inline-flex items-center gap-1.5 !py-2 !text-xs">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
+                            Panel Admin
+                        </a>
+                    @endif
+                    <a href="{{ route('guru.ebooks.create') }}" class="btn-primary !py-2 !text-xs">+ Tambah E-Book</a>
+                </div>
             @endif
         </div>
     </x-slot>

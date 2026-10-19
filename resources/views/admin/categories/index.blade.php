@@ -2,6 +2,7 @@
 @section('title', 'Kategori')
 
 @section('content')
+<div class="mb-3"><x-back-button :href="route('admin.dashboard')" label="Dashboard" /></div>
 <div class="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
     <p class="text-sm text-stone-500">{{ $categories->total() }} kategori • hanya bisa dihapus jika tidak dipakai e-book</p>
     <a href="{{ route('admin.categories.create') }}" class="btn-primary !py-2 text-center text-sm">+ Tambah Kategori</a>

@@ -6,6 +6,8 @@ use Database\Seeders\DatabaseSeeder;
 
 beforeEach(function () {
     $this->seed(DatabaseSeeder::class);
+    // Test ini menguji provider LOKAL (retriever) agar hermetik walau .env memakai gemini/openai.
+    config(['chatbot.provider' => 'local']);
 });
 
 test('stemming: pertanyaan berimbuhan tetap menemukan kutipan', function () {

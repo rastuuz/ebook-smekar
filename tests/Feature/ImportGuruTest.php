@@ -4,6 +4,8 @@ use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 beforeEach(function () {
     $this->seed(DatabaseSeeder::class);
@@ -111,11 +113,11 @@ test('admin bisa import guru dari Excel dengan header NIP Nama', function () {
     $admin = User::where('username', 'admin')->first();
     $this->actingAs($admin);
 
-    $sheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+    $sheet = new Spreadsheet;
     $ws = $sheet->getActiveSheet();
     $ws->fromArray([['NIP', 'Nama'], ['19800101', 'Guru Excel Satu'], ['19800102', 'Guru Excel Dua']], null, 'A1');
     $tmp = tempnam(sys_get_temp_dir(), 'guru').'.xlsx';
-    (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($sheet))->save($tmp);
+    (new Xlsx($sheet))->save($tmp);
     $file = new UploadedFile($tmp, 'guru.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 
     $this->post(route('admin.users.import'), [
@@ -135,7 +137,7 @@ test('admin bisa import siswa dari Excel urutan kolom bebas + NIS angka', functi
     $admin = User::where('username', 'admin')->first();
     $this->actingAs($admin);
 
-    $sheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+    $sheet = new Spreadsheet;
     $ws = $sheet->getActiveSheet();
     // Urutan sengaja dibalik + ada kolom No tambahan.
     $ws->fromArray([
@@ -144,7 +146,7 @@ test('admin bisa import siswa dari Excel urutan kolom bebas + NIS angka', functi
         [2, 'Siswa Excel Dua', 'X TKJ 1', 19012],
     ], null, 'A1');
     $tmp = tempnam(sys_get_temp_dir(), 'siswa').'.xlsx';
-    (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($sheet))->save($tmp);
+    (new Xlsx($sheet))->save($tmp);
     $file = new UploadedFile($tmp, 'siswa.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 
     $this->post(route('admin.users.import'), [
@@ -162,7 +164,7 @@ test('admin bisa import guru Excel format NIP Nama Password', function () {
     $admin = User::where('username', 'admin')->first();
     $this->actingAs($admin);
 
-    $sheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
+    $sheet = new Spreadsheet;
     $ws = $sheet->getActiveSheet();
     $ws->fromArray([
         ['NIP', 'Nama', 'Password'],
@@ -170,7 +172,7 @@ test('admin bisa import guru Excel format NIP Nama Password', function () {
         ['19700102', 'Guru NIP Dua', ''],
     ], null, 'A1');
     $tmp = tempnam(sys_get_temp_dir(), 'guru').'.xlsx';
-    (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($sheet))->save($tmp);
+    (new Xlsx($sheet))->save($tmp);
     $file = new UploadedFile($tmp, 'guru.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 
     $this->post(route('admin.users.import'), [

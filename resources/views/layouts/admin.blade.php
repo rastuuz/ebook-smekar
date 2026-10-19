@@ -141,6 +141,11 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0H4Z"/></svg>
                     Profil Saya
                 </a>
+                <p class="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-widest text-stone-500">Pratinjau</p>
+                <a href="{{ route('ebooks.index') }}" class="side-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M12 6c4.5 0 8.4 2.6 10 6-1.6 3.4-5.5 6-10 6S3.6 15.4 2 12c1.6-3.4 5.5-6 10-6Zm0 2C8.7 8 5.7 9.9 4 12c1.7 2.1 4.7 4 8 4s6.3-1.9 8-4c-1.7-2.1-4.7-4-8-4Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>
+                    Lihat sebagai Siswa
+                </a>
             </nav>
             <form method="POST" action="{{ route('logout') }}" class="mt-4">
                 @csrf
