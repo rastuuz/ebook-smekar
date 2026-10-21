@@ -73,15 +73,28 @@
 
                 <div id="dash-grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($ebooks as $ebook)
-                        <div class="card card-pad flex flex-col transition duration-200 hover:-translate-y-0.5 hover:shadow-lift">
-                            <span class="badge-cat self-start">{{ $ebook->category->name ?? '-' }}</span>
-                            <h4 class="title-display mt-2.5 line-clamp-2 text-lg leading-snug">{{ $ebook->title }}</h4>
-                            <p class="mt-0.5 text-sm text-stone-500">{{ $ebook->author }}</p>
+                        <article class="card card-hover group flex flex-col">
+                            <div class="flex gap-3 p-4 sm:gap-4 sm:p-5">
+                                <div class="book-frame h-28 w-20 shrink-0 sm:h-32 sm:w-24">
+                                    @if($ebook->cover)
+                                        <img src="{{ $ebook->cover_url }}" alt="Sampul {{ $ebook->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                                    @else
+                                        <span class="font-display text-4xl font-semibold text-stone-300" aria-hidden="true">{{ strtoupper(mb_substr($ebook->title, 0, 1)) }}</span>
+                                    @endif
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="badge-cat">{{ $ebook->category->name ?? '-' }}</span>
+                                    <h4 class="title-display mt-2 line-clamp-2 text-base leading-snug sm:text-[1.05rem]">{{ $ebook->title }}</h4>
+                                    <p class="mt-0.5 truncate text-sm text-stone-500">{{ $ebook->author }}</p>
+                                </div>
+                            </div>
                             @if($ebook->description)
-                                <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">{{ $ebook->description }}</p>
+                                <p class="px-4 pb-1 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500 sm:px-5">{{ $ebook->description }}</p>
                             @endif
-                            <a href="{{ route('ebooks.show', $ebook) }}" class="btn-primary mt-4 !py-2 !text-xs">Lihat Detail →</a>
-                        </div>
+                            <div class="mt-auto p-4 sm:p-5 sm:pt-3">
+                                <a href="{{ route('ebooks.show', $ebook) }}" class="btn-primary w-full !py-2 !text-[13px]">Lihat Detail →</a>
+                            </div>
+                        </article>
                     @endforeach
                 </div>
                 <div id="dash-empty" class="hidden card card-pad text-center">
@@ -201,12 +214,25 @@
             } else {
                 emptyBox.classList.add('hidden');
                 grid.classList.remove('hidden');
-                grid.innerHTML = items.map((b) => `<div class="card card-pad flex flex-col transition duration-200 hover:-translate-y-0.5 hover:shadow-lift">
-                    <span class="badge-cat self-start">${esc(b.category)}</span>
-                    <h4 class="title-display mt-2.5 line-clamp-2 text-lg leading-snug">${esc(b.title)}</h4>
-                    <p class="mt-0.5 text-sm text-stone-500">${esc(b.author)}</p>
-                    ${b.description ? `<p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">${esc(b.description)}</p>` : ''}
-                    <a href="${esc(b.detail_url)}" class="btn-primary mt-4 !py-2 !text-xs">Lihat Detail →</a></div>`).join('');
+                grid.innerHTML = items.map((b) => {
+                    const initial = esc(String(b.title ?? '').charAt(0).toUpperCase());
+                    const cover = b.cover_url
+                        ? `<img src="${esc(b.cover_url)}" alt="Sampul ${esc(b.title)}" class="h-full w-full object-cover" loading="lazy" decoding="async">`
+                        : `<span class="font-display text-4xl font-semibold text-stone-300">${initial}</span>`;
+                    const desc = b.description ? `<p class="px-4 pb-1 line-clamp-2 text-sm leading-relaxed text-stone-500 sm:px-5">${esc(b.description)}</p>` : '';
+                    return `<article class="card card-hover group flex flex-col">
+                        <div class="flex gap-3 p-4 sm:gap-4 sm:p-5">
+                            <div class="book-frame h-28 w-20 shrink-0 sm:h-32 sm:w-24">${cover}</div>
+                            <div class="min-w-0 flex-1">
+                                <span class="badge-cat">${esc(b.category)}</span>
+                                <h4 class="title-display mt-2 line-clamp-2 text-base leading-snug sm:text-[1.05rem]">${esc(b.title)}</h4>
+                                <p class="mt-0.5 truncate text-sm text-stone-500">${esc(b.author)}</p>
+                            </div>
+                        </div>${desc}
+                        <div class="mt-auto p-4 sm:p-5 sm:pt-3">
+                            <a href="${esc(b.detail_url)}" class="btn-primary w-full !py-2 !text-[13px]">Lihat Detail →</a>
+                        </div></article>`;
+                }).join('');
                 title.textContent = 'Hasil Pencarian';
                 status.textContent = `${items.length} hasil${keyword ? ` untuk \u201C${keyword}\u201D` : ''}.`;
             }
