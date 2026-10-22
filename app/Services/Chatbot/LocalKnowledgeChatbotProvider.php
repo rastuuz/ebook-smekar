@@ -154,9 +154,14 @@ class LocalKnowledgeChatbotProvider implements ChatbotProviderInterface
             $base .= "\nUntuk e-book ini, mulai dari: ".($videoList !== '' ? $videoList : 'deskripsi e-book').'.';
         }
 
-        $base .= "\n\nTips: jika masih bingung, tanyakan lebih spesifik, misalnya “Apa contoh energi kinetik dalam kehidupan sehari-hari?”";
+        $base .= "\n\nTips: jika masih bingung, tanyakan lebih spesifik, misalnya “Apa yang dimaksud dengan istilah ini dalam buku {$this->bookName($ebook)}?”";
 
         return $base;
+    }
+
+    protected function bookName(?Ebook $ebook): string
+    {
+        return $ebook ? "“{$ebook->title}”" : 'yang sedang dibaca';
     }
 
     protected function studyTip(Ebook $ebook): string

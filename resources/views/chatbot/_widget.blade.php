@@ -1,27 +1,27 @@
-{{-- Widget chatbot inline (halaman detail): tipografis, tanpa ikon --}}
+{{-- Widget chatbot inline (halaman detail): polos tanpa branding, siswa langsung tulis pertanyaan --}}
 <div id="chatbot" class="card overflow-hidden" data-ebook-id="{{ isset($ebook) ? $ebook->id : '' }}">
-    <div class="border-b border-stone-200/80 bg-gradient-to-b from-[#16294f] to-[#0e1b33] px-4 py-4 sm:px-5">
-        <h2 class="font-display text-[1.05rem] font-semibold tracking-tight text-white">Asisten Belajar</h2>
-        <p class="mt-0.5 truncate text-xs text-stone-300">
-            @isset($ebook)
-                Membahas: {{ $ebook->title }}
-            @else
-                Tanya materi apa saja
-            @endisset
-        </p>
-    </div>
-
     <div id="chat-messages" class="max-h-72 space-y-2.5 overflow-y-auto bg-[#faf8f3] p-4 text-sm leading-relaxed">
-        <div class="max-w-[85%] rounded-xl rounded-tl-sm border border-stone-200 bg-white px-3.5 py-2.5 text-stone-700 shadow-sm">
-            Halo! Tulis pertanyaan soal materi di bawah.
+        <div data-chat-empty class="flex h-40 flex-col items-center justify-center text-center sm:h-44">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-stone-200 bg-white shadow-sm">
+                <svg class="h-5 w-5 text-[#a8861d]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 20l1.1-4.3A8.5 8.5 0 1 1 21 11.5Z"/><path d="M9.5 9.7a2.5 2.5 0 0 1 4.9.8c0 1.7-2.4 2-2.4 3.5"/><circle cx="12" cy="16.8" r="0.7" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <p class="mt-3 text-sm font-semibold text-stone-700">Ada materi yang mau ditanyakan?</p>
+            <p class="mt-1 max-w-[250px] text-xs leading-relaxed text-stone-500">Tulis pertanyaan tentang isi e-book di kolom bawah, atau mulai dari salah satu tombol di bawah.</p>
         </div>
     </div>
 
     <div class="border-t border-stone-200/80 bg-white px-4 py-3 sm:px-5">
         <div class="mb-2.5 flex flex-wrap gap-1.5">
-            <button type="button" data-chat-suggest="Ringkas materi e-book ini" class="chip !py-1">Ringkas materi</button>
-            <button type="button" data-chat-suggest="Sebutkan istilah penting dari e-book ini" class="chip !py-1">Istilah penting</button>
-            <button type="button" data-chat-suggest="Buatkan 3 pertanyaan latihan dari e-book ini" class="chip !py-1">Latihan soal</button>
+            <button type="button" data-chat-suggest="Ringkas materi e-book ini"
+                class="inline-flex items-center gap-1.5 rounded-full border border-stone-200/90 bg-[#faf8f3] px-3 py-1.5 text-[11px] font-semibold text-stone-600 transition duration-200 hover:-translate-y-px hover:border-stone-300 hover:bg-white hover:text-stone-900 hover:shadow-sm active:translate-y-0 active:border-transparent active:bg-[#0e1b33] active:text-white">
+                <svg class="h-3 w-3 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>
+                Ringkas materi
+            </button>
+            <button type="button" data-chat-suggest="Sebutkan istilah penting dari e-book ini"
+                class="inline-flex items-center gap-1.5 rounded-full border border-stone-200/90 bg-[#faf8f3] px-3 py-1.5 text-[11px] font-semibold text-stone-600 transition duration-200 hover:-translate-y-px hover:border-stone-300 hover:bg-white hover:text-stone-900 hover:shadow-sm active:translate-y-0 active:border-transparent active:bg-[#0e1b33] active:text-white">
+                <svg class="h-3 w-3 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="m3 6 1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2"/></svg>
+                Istilah penting
+            </button>
         </div>
         <form id="chat-form" class="flex gap-2">
             @csrf
@@ -45,19 +45,30 @@
     const sendBtn = document.getElementById('chat-send');
     const err = document.getElementById('chat-error');
     const token = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    // Riwayat frontend-only: 5 pesan terakhir dikirim agar bot nyambung konteks.
     const history = [];
     // Teks riwayat dibatasi 500 karakter agar lolos validasi backend (history.*.text max).
     const clip = (s) => (s.length > 500 ? s.slice(0, 500) : s);
-    const inputDefault = input.placeholder;
-    let latihanMode = false;
+
+    // Format ringan untuk jawaban: escape HTML dulu, lalu **tebal**, *miring*, dan baris baru.
+    // Tidak dipakai untuk pesan siswa supaya apa yang diketik tampil apa adanya.
+    function fmt(text) {
+        return text
+            .replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>');
+    }
 
     function bubble(text, mine) {
+        messages.querySelector('[data-chat-empty]')?.remove();
         const div = document.createElement('div');
-        div.className = mine
-            ? 'ml-auto max-w-[85%] rounded-xl rounded-tr-sm bg-[#0e1b33] px-3.5 py-2.5 text-white shadow-sm'
-            : 'max-w-[85%] rounded-xl rounded-tl-sm border border-stone-200 bg-white px-3.5 py-2.5 text-stone-700 shadow-sm whitespace-pre-line';
-        div.textContent = text;
+        if (mine) {
+            div.className = 'ml-auto max-w-[85%] rounded-xl rounded-tr-sm bg-[#0e1b33] px-3.5 py-2.5 text-white shadow-sm';
+            div.textContent = text;
+        } else {
+            div.className = 'max-w-[85%] rounded-xl rounded-tl-sm border border-stone-200 bg-white px-3.5 py-2.5 text-stone-700 shadow-sm';
+            div.innerHTML = fmt(text);
+        }
         messages.appendChild(div);
         messages.scrollTop = messages.scrollHeight;
         return div;
@@ -90,7 +101,8 @@
             const answer = data.answer || 'Maaf, belum ada jawaban.';
             bubble(answer, false);
             history.push({ role: 'assistant', text: clip(answer) });
-            if (latihanMode || /coba dijawab/i.test(answer)) {
+            // Kalau jawaban mengajak siswa mencoba menjawab, ubah petunjuk isian.
+            if (/coba dijawab/i.test(answer)) {
                 input.placeholder = 'Tulis jawaban latihanmu di sini…';
             }
             if (history.length > 10) history.splice(0, history.length - 10);
@@ -107,10 +119,7 @@
         sendQuestion(input.value.trim());
     });
     box.querySelectorAll('[data-chat-suggest]').forEach((b) => b.addEventListener('click', () => {
-        const prompt = b.getAttribute('data-chat-suggest') || '';
-        latihanMode = /latihan/i.test(prompt);
-        if (!latihanMode) input.placeholder = inputDefault;
-        sendQuestion(prompt);
+        sendQuestion(b.getAttribute('data-chat-suggest') || '');
     }));
 })();
 </script>

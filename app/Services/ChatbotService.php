@@ -97,6 +97,8 @@ class ChatbotService
         $context['ebook'] = $ebook;
         $context['ebook_id'] = $ebook->id;
         $context['ebook_title'] = $ebook->title;
+        $context['ebook_author'] = $ebook->author;
+        $context['ebook_category'] = $ebook->category->name ?? null;
         $context['content_chunks'] = $this->retriever->chunksForPrompt($ebook, $question);
         $context['video_titles'] = $ebook->videos->take(3)->map(fn ($v) => $v->title)->all();
 

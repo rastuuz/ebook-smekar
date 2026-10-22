@@ -24,7 +24,7 @@
                         <h1 class="title-display mt-2 text-2xl leading-tight tracking-tight sm:text-3xl">{{ $ebook->title }}</h1>
                         <p class="mt-1 text-sm text-stone-500">Oleh <span class="font-semibold text-stone-800">{{ $ebook->author }}</span></p>
                         @if($ebook->contributor)
-                            <p class="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">✨ Dikontribusikan oleh {{ $ebook->contributor->name }}</p>
+                            <p class="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">Dikontribusikan oleh {{ $ebook->contributor->name }}</p>
                         @endif
                         @if($ebook->description)
                             <p class="mt-3 max-w-2xl text-sm leading-relaxed text-stone-600">{{ $ebook->description }}</p>
@@ -47,25 +47,6 @@
                         </div>
                     </div>
                 </div>
-
-                @if($ebook->file)
-                <div class="border-t border-stone-200/80 p-4 sm:p-5">
-                    <p class="title-display mb-2 text-base">Pratinjau PDF</p>
-                    {{-- Desktop: iframe. Mobile: browser HP umumnya tak bisa render PDF inline — ganti tombol buka. --}}
-                    <div id="pdf-preview" class="h-[60dvh] max-h-[480px] min-h-[320px] overflow-hidden rounded-lg border border-stone-200">
-                        <iframe src="{{ route('ebooks.read', $ebook) }}" class="h-full w-full" title="Pratinjau PDF"></iframe>
-                    </div>
-                    <div id="pdf-preview-fallback" class="hidden rounded-lg border border-dashed border-stone-300 bg-[#faf8f3] p-6 text-center">
-                        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#c9a227]/30 bg-[#faf3dd]">
-                            <svg class="h-6 w-6 text-[#a8861d]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9Z"/><path d="M13 3v6h6"/><path d="M9 15h6M9 11h3"/></svg>
-                        </span>
-                        <p class="mt-3 text-sm font-semibold text-stone-800">Pratinjau PDF tidak ditampilkan di layar kecil</p>
-                        <p class="mx-auto mt-1 max-w-xs text-xs leading-relaxed text-stone-500">Browser HP umumnya tidak mendukung PDF bawaan. Buka langsung untuk membaca layar penuh.</p>
-                        <a href="{{ route('ebooks.read', $ebook) }}" target="_blank" class="btn-gold mt-4 w-full sm:w-auto">Baca E-Book →</a>
-                    </div>
-                    <p id="pdf-preview-note" class="mt-2 text-xs text-stone-400">Jika PDF tidak tampil, <a class="font-semibold text-brand-800 underline underline-offset-4" target="_blank" href="{{ route('ebooks.read', $ebook) }}">buka di tab baru</a>.</p>
-                </div>
-                @endif
             </div>
 
             {{-- Video --}}
@@ -89,7 +70,7 @@
                                 <div class="p-3.5">
                                     <p class="text-sm font-semibold text-stone-900">{{ $video->title }}</p>
                                     @if($video->contributor)
-                                        <p class="mt-1 text-xs text-stone-400">✨ Kontribusi {{ $video->contributor->name }}</p>
+                                        <p class="mt-1 text-xs text-stone-400">Kontribusi {{ $video->contributor->name }}</p>
                                     @endif
                                     @if($video->description)<p class="mt-0.5 line-clamp-2 text-xs leading-relaxed text-stone-500">{{ $video->description }}</p>@endif
                                     <a href="{{ $video->youtube_url }}" target="_blank" rel="noopener" class="mt-1.5 inline-block text-xs font-semibold text-brand-800 underline-offset-4 hover:underline">Buka di YouTube</a>
@@ -123,19 +104,5 @@
 
     <script>
         window.__EBOOK__ = { id: "{{ $ebook->id }}", title: @json($ebook->title) };
-    </script>
-    <script>
-    (function () {
-        var preview = document.getElementById('pdf-preview');
-        if (!preview) return;
-        var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
-            || Math.min(window.screen.width, window.screen.height) < 500;
-        if (!isMobile) return;
-        preview.classList.add('hidden');
-        var fallback = document.getElementById('pdf-preview-fallback');
-        if (fallback) fallback.classList.remove('hidden');
-        var note = document.getElementById('pdf-preview-note');
-        if (note) note.classList.add('hidden');
-    })();
     </script>
 </x-app-layout>

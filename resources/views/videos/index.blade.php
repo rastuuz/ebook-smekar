@@ -73,7 +73,7 @@
                                 </div>
                                 <h3 class="title-display mt-1 line-clamp-2 text-lg leading-snug">{{ $video->title }}</h3>
                                 @if($video->contributor)
-                                    <p class="mt-1 text-xs text-stone-400">✨ Kontribusi {{ $video->contributor->name }}</p>
+                                    <p class="mt-1 text-xs text-stone-400">Kontribusi {{ $video->contributor->name }}</p>
                                 @endif
                                 @if($video->ebook)
                                     <a href="{{ route('ebooks.show', $video->ebook) }}" class="mt-0.5 inline-block truncate text-sm font-medium text-brand-800 underline-offset-4 hover:underline">{{ $video->ebook->title }}</a>

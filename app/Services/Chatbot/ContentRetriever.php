@@ -16,7 +16,7 @@ use Sastrawi\Stemmer\StemmerFactory;
  */
 class ContentRetriever
 {
-    public const SNIPPET_CHARS = 240;
+    public const SNIPPET_CHARS = 300;
 
     public const FUZZY_MIN_LENGTH = 5;
 
@@ -106,7 +106,7 @@ class ContentRetriever
     /** @return list<string> */
     public function keywords(string $question): array
     {
-        $stopwords = ['apa', 'yang', 'dimaksud', 'dengan', 'adalah', 'bagaimana', 'mengapa', 'jelaskan', 'tentang', 'dan', 'atau', 'di', 'ke', 'dari', 'untuk', 'pada', 'ini', 'itu', 'saya', 'kamu', 'tolong', '?'];
+        $stopwords = ['apa', 'apakah', 'yang', 'dimaksud', 'dengan', 'adalah', 'bagaimana', 'kenapa', 'gimana', 'mengapa', 'jelaskan', 'sebutkan', 'contoh', 'tentang', 'dan', 'atau', 'di', 'ke', 'dari', 'untuk', 'pada', 'ini', 'itu', 'saya', 'kamu', 'tolong', '?'];
         $words = preg_split('/[^\p{L}\p{N}]+/u', Str::lower($question), -1, PREG_SPLIT_NO_EMPTY) ?: [];
 
         return array_values(array_filter($words, fn ($w) => mb_strlen($w) > 2 && ! in_array($w, $stopwords)));
@@ -282,7 +282,7 @@ class ContentRetriever
     }
 
     /** @return list<string> potongan "hal. X: ..." untuk prompt AI */
-    public function chunksForPrompt(Ebook $ebook, string $question, int $limit = 4): array
+    public function chunksForPrompt(Ebook $ebook, string $question, int $limit = 8): array
     {
         return array_map(
             fn ($h) => ($h['page'] ? "[hal.{$h['page']}] " : '').$h['snippet'],
