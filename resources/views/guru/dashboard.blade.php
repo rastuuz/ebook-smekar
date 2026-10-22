@@ -64,17 +64,33 @@
                     </div>
                 </div>
                 @if(($myEbooks ?? collect())->isNotEmpty() || ($myVideos ?? collect())->isNotEmpty())
-                    <ul class="mt-3 space-y-1.5 text-sm">
+                    <ul class="mt-3 divide-y divide-stone-100">
                         @foreach($myEbooks ?? [] as $mine)
-                            <li class="flex items-center justify-between gap-2 rounded-lg bg-stone-50 px-3 py-2">
-                                <span class="min-w-0 truncate font-semibold text-stone-800">📘 {{ $mine->title }}</span>
+                            <li class="flex items-center gap-3 py-2">
+                                <div class="book-frame h-12 w-9">
+                                    @if($mine->cover)
+                                        <img src="{{ $mine->cover_url }}" alt="Sampul {{ $mine->title }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
+                                    @else
+                                        <span class="font-display text-base font-semibold text-stone-300" aria-hidden="true">{{ strtoupper(mb_substr($mine->title, 0, 1)) }}</span>
+                                    @endif
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate font-semibold text-stone-800">{{ $mine->title }}</p>
+                                    <p class="mt-0.5 text-xs text-stone-400">{{ $mine->category->name ?? '-' }} &middot; e-book</p>
+                                </div>
                                 <a href="{{ route('ebooks.show', $mine) }}" class="shrink-0 text-xs font-semibold text-brand-800 hover:underline">Lihat</a>
                             </li>
                         @endforeach
                         @foreach($myVideos ?? [] as $mine)
-                            <li class="flex items-center justify-between gap-2 rounded-lg bg-stone-50 px-3 py-2">
-                                <span class="min-w-0 truncate font-semibold text-stone-800">🎬 {{ $mine->title }}</span>
-                                <span class="shrink-0 text-xs text-stone-400">{{ $mine->ebook->title ?? '' }}</span>
+                            <li class="flex items-center gap-3 py-2">
+                                <span class="flex h-12 w-9 shrink-0 items-center justify-center rounded-lg border border-stone-200/90 bg-gradient-to-b from-[#f7f3e8] to-[#ece5d0] text-sm shadow-sm" aria-hidden="true">🎬</span>
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate font-semibold text-stone-800">{{ $mine->title }}</p>
+                                    <p class="mt-0.5 truncate text-xs text-stone-400">{{ $mine->ebook->title ?? '' }} &middot; video</p>
+                                </div>
+                                @if($mine->ebook)
+                                    <a href="{{ route('ebooks.show', $mine->ebook) }}" class="shrink-0 text-xs font-semibold text-brand-800 hover:underline">Lihat</a>
+                                @endif
                             </li>
                         @endforeach
                     </ul>
@@ -95,15 +111,29 @@
                 @else
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach($ebooks as $ebook)
-                            <div class="card card-pad flex flex-col transition duration-200 hover:-translate-y-0.5 hover:shadow-lift">
-                                <span class="badge-cat self-start">{{ $ebook->category->name ?? '-' }}</span>
-                                <h4 class="title-display mt-2.5 line-clamp-2 text-lg leading-snug">{{ $ebook->title }}</h4>
-                                <p class="mt-0.5 text-sm text-stone-500">{{ $ebook->author }}</p>
+                            <article class="card card-hover group flex flex-col">
+                                <div class="flex gap-3 p-4 sm:gap-4 sm:p-5">
+                                    <div class="book-frame h-28 w-20 shrink-0 sm:h-32 sm:w-24">
+                                        @if($ebook->cover)
+                                            <img src="{{ $ebook->cover_url }}" alt="Sampul {{ $ebook->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                                        @else
+                                            <span class="font-display text-4xl font-semibold text-stone-300" aria-hidden="true">{{ strtoupper(mb_substr($ebook->title, 0, 1)) }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <span class="badge-cat">{{ $ebook->category->name ?? '-' }}</span>
+                                        <h4 class="title-display mt-2 line-clamp-2 text-base leading-snug sm:text-[1.05rem]">{{ $ebook->title }}</h4>
+                                        <p class="mt-0.5 truncate text-sm text-stone-500">{{ $ebook->author }}</p>
+                                        <p class="mt-2 text-xs font-medium tracking-wide text-stone-400">{{ $ebook->videos_count ?? 0 }} video pembelajaran</p>
+                                    </div>
+                                </div>
                                 @if($ebook->description)
-                                    <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">{{ $ebook->description }}</p>
+                                    <p class="px-4 pb-1 line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500 sm:px-5">{{ $ebook->description }}</p>
                                 @endif
-                                <a href="{{ route('ebooks.show', $ebook) }}" class="btn-primary mt-4 !py-2 !text-xs">Lihat Detail →</a>
-                            </div>
+                                <div class="mt-auto p-4 sm:p-5 sm:pt-3">
+                                    <a href="{{ route('ebooks.show', $ebook) }}" class="btn-primary w-full !py-2 !text-[13px]">Lihat Detail →</a>
+                                </div>
+                            </article>
                         @endforeach
                     </div>
                 @endif

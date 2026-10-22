@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-3">
-            <a href="{{ route('videos.index') }}" class="btn-ghost shrink-0 !px-3 !py-1.5 !text-xs">← Video</a>
+            <a href="{{ route('dashboard') }}" class="btn-ghost shrink-0 !px-3 !py-1.5 !text-xs">← Dashboard</a>
             <div class="min-w-0">
                 <p class="eyebrow">Kontribusi Guru</p>
                 <h2 class="title-display text-xl">Tambah Video YouTube</h2>
@@ -42,7 +42,7 @@
                     <textarea name="description" rows="3" class="input">{{ old('description') }}</textarea>
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ route('videos.index') }}" class="btn-ghost">Batal</a>
+                    <a href="{{ route('dashboard') }}" class="btn-ghost">Batal</a>
                     <button class="btn-primary">Simpan Kontribusi</button>
                 </div>
             </form>

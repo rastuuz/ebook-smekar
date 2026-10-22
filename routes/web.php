@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
         if ($user->isGuru()) {
             return view('guru.dashboard', [
                 'user' => $user,
-                'ebooks' => Ebook::with(['category', 'contributor'])->latest()->take(6)->get(),
+                'ebooks' => Ebook::with(['category', 'contributor'])->withCount('videos')->latest()->take(6)->get(),
                 'totalEbooks' => Cache::remember('stats:total-ebooks', 60, fn () => Ebook::count()),
                 'totalCategories' => Cache::remember('stats:total-categories', 60, fn () => Category::count()),
                 'totalVideos' => Cache::remember('stats:total-videos', 60, fn () => EbookVideo::count()),

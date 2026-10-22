@@ -44,7 +44,7 @@ class EbookVideoController extends Controller
         Cache::forget('stats:total-videos');
         Cache::forget('stats:admin-dashboard');
 
-        return redirect()->route('videos.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Terima kasih! Video berhasil ditambahkan sebagai kontribusi Anda.');
     }
 }
